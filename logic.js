@@ -22,6 +22,7 @@ database.ref().on("value", function(snapshot) {
       restaurants = child.val().restaurants;
       console.log(restaurants);
     });
+    addToLists();
     //name = person.Preference.restaurantName
 })
       function initMap() {
@@ -45,12 +46,20 @@ database.ref().on("value", function(snapshot) {
               map: map
             });
             for(i=0; i < favRestaurants.length; i++) {
-              var randPos = {lat: favRestaurants[i].lat, lng: favRestaurants[i].lng};
-              var marker =  new google.maps.Marker({
-                position: randPos,
-                icon: iconBase + 'grn-stars.png',
-                map: map
-              });
+              var randPos = {lat: parseInt(favRestaurants[i].lat), lng: parseInt(favRestaurants[i].lng)};
+              if(favRestaurants[i].type == 0){
+                var marker =  new google.maps.Marker({
+                  position: randPos,
+                  icon: iconBase + 'grn-stars.png',
+                  map: map
+                });
+              } else {
+                var marker =  new google.maps.Marker({
+                  position: randPos,
+                  icon: iconBase + 'blu-stars.png',
+                  map: map
+                });  
+              }  
             }  
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
@@ -74,20 +83,24 @@ database.ref().on("value", function(snapshot) {
 
 function addToLists() {
   for(i=0; i < restaurants.length; i++){
-    var name = restaurants[i].name;
+    var name = restaurants[i].restaurantName;
+    console.log(name);
     var lat = restaurants[i].location.latitude;
+    console.log(lat);
     var lng = restaurants[i].location.longitude;
-    var locationObject = {name:name, lat:lat, lng:lng};
-    if(restaurants.type == 0) {
-      favRestaurants.push(locationObject);
-    } else {
-      wantToGo.push(locationObject);
-    }
-  }  
+    var type = restaurants[i].type;
+    console.log(type);
+    var locationObject = {name:name, lat:lat, lng:lng, type:type};
+
+    console.log(locationObject);
+    favRestaurants.push(locationObject);
+    console.log(favRestaurants);
+
+  }
+
 }
 $(document).ready(function() {
 
-addToLists();
 console.log(favRestaurants);
 console.log("hi");
 console.log(restaurants);
